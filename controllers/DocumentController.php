@@ -148,30 +148,11 @@ class DocumentController extends Controller
 
     public function actionRemove()
     {
-
-        $uploadDir = '/upload';
-        //$file = UploadedFile::getInstance($document, 'file');
-        $file = UploadedFile::getInstanceByName('file');
-        $path =  $uploadDir . '/' . $file->name;
-        if(isset($_FILES['file']))
-        {
-            if($file->saveAs(Yii::getAlias('@webroot').$path))
-            {
-                $attachment = new Attachment();
-                $attachment->load(['Attachment' => [
-                    'entityID' => 0,
-                    'filename' => $file->name,
-                    'filesize' => $file->size,
-                    'path' => $path,
-                    'weight' => 0,
-                ]]);
-                if($attachment->save())
-                {
-                    Yii::$app->response->format = Response::FORMAT_JSON;
-                    return $attachment;
-                }
-            }
-        }
+        $g = Yii::$app->request->get();
+        $attachment = Attachment::findOne($g['id']);
+        $path = $attachment->getAttribute('path');
+        unlink(Yii::getAlias('@webroot').$path);
+        $attachment->delete();
         return false;
     }
 
@@ -184,8 +165,15 @@ class DocumentController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        $documents = $this->findModel($id);
 
+        foreach($documents->attachments as $attachment)
+        {
+            $path = $attachment->getAttribute('path');
+            unlink(Yii::getAlias('@webroot').$path);
+            $attachment->delete();
+        }
+        $documents->delete();
         return $this->redirect(['index']);
     }
 

@@ -95,8 +95,10 @@ class DropZoneWidget extends Widget
             ksort($file);
             foreach($file as $fileInfo)
             {
+
                 $js.= 'myDropzone.emit("addedfile", '.Json::encode($fileInfo).');';
-                $js.= 'myDropzone.emit("thumbnail", '.Json::encode($fileInfo).', "/'.$fileInfo['path'].'");';
+                $js.= 'myDropzone.createThumbnailFromUrl('.Json::encode($fileInfo).', "'.$fileInfo['thumbnail'].'");';
+//                $js.= 'myDropzone.emit("thumbnail", '.Json::encode($fileInfo).', "/'.$fileInfo['path'].'");';
             }
         }
         $view->registerJs($js);

@@ -128,3 +128,7 @@ a.desc:after {
 {
     opacity: 1;
 }
+.dz-title
+{
+    display:none;
+}

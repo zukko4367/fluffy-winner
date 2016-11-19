@@ -5,6 +5,7 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 $this->registerJsFile('https://code.jquery.com/ui/1.12.1/jquery-ui.js', ['depends' => ['yii\web\JqueryAsset'],]);
+$this->registerJsFile('https://raw.githubusercontent.com/furf/jquery-ui-touch-punch/master/jquery.ui.touch-punch.min.js', ['depends' => ['yii\web\JqueryAsset'],]);
 $this->registerJsFile('js/main.js', ['depends' => ['yii\web\JqueryAsset'],]);
 ?>
 
@@ -35,7 +36,11 @@ $this->registerJsFile('js/main.js', ['depends' => ['yii\web\JqueryAsset'],]);
                 'addRemoveLinks' => true,
             ],
             'events' => [
-                'removedfile' => "function(file){alert(file.name + ' is removed')}",
+                'removedfile' => "function(file){
+                    $.get('/document/remove',{id:file.id},function(response){
+                        console.log(response);
+                    });
+                }",
                 'success' => "function(file, response){
                     var id = response.id;
                     //var fields = ['id', 'weight', 'title'];
@@ -65,7 +70,8 @@ $this->registerJsFile('js/main.js', ['depends' => ['yii\web\JqueryAsset'],]);
                     if(file.id)
                     {
                         var id = file.id;
-
+                        file.previewElement.querySelector('img').src = file.thumbnail;
+                        file.previewElement.querySelector('img').src = file.thumbnail;
                         //var fields = ['id', 'weight', 'title'];
                             $('<input>', {
                                 type: 'hidden',
