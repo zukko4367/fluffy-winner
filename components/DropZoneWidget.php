@@ -81,24 +81,17 @@ class DropZoneWidget extends Widget
 
         if(!empty($this->previews))
         {
-            $file = [];
             foreach($this->previews as $attachment)
             {
-                $file[$attachment->getAttribute('weight')] = [
+                $file = [
                   'id' => $attachment->getAttribute('id'),
                   'name' => $attachment->getAttribute('filename'),
                   'size' => $attachment->getAttribute('filesize'),
                   'weight' => $attachment->getAttribute('weight'),
-                  'thumbnail' => $attachment->getAttribute('path'),
+                  'path' => $attachment->getAttribute('path'),
+                  'mimetype' => $attachment->getAttribute('mimetype'),
                 ];
-            }
-            ksort($file);
-            foreach($file as $fileInfo)
-            {
-
-                $js.= 'myDropzone.emit("addedfile", '.Json::encode($fileInfo).');';
-                $js.= 'myDropzone.createThumbnailFromUrl('.Json::encode($fileInfo).', "'.$fileInfo['thumbnail'].'");';
-//                $js.= 'myDropzone.emit("thumbnail", '.Json::encode($fileInfo).', "/'.$fileInfo['path'].'");';
+                $js.= 'myDropzone.emit("addedfile", '.Json::encode($file).');';
             }
         }
         $view->registerJs($js);
@@ -108,7 +101,7 @@ class DropZoneWidget extends Widget
     private function dropzonePreviewTemplate()
     {
         return '
-	    <div class="dz-preview dz-processing dz-image-preview dz-success dz-complete">
+	    <div class="dz-preview dz-image-preview ">
 			<div class="dz-image">
 				<img data-dz-thumbnail="" >
 			</div>
@@ -119,8 +112,7 @@ class DropZoneWidget extends Widget
 			<div class="dz-title"></div>
 			<div class="dz-id"></div>
 			</div>
-			<div class="dz-progress">
-			</div>
+			<div class="dz-progress"><span class="dz-upload" data-dz-uploadprogress></span></div>
 			<div class="dz-error-message"></div>
 			<div class="dz-success-mark">
 			</div>

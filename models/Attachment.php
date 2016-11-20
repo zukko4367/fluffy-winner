@@ -38,7 +38,8 @@ class Attachment extends \yii\db\ActiveRecord
         return [
             [['filename', 'path', 'filesize', 'entityID'], 'required'],
             [['path'], 'string'],
-            [['filesize', 'entityID'], 'integer'],
+            [['mimetype'], 'string'],
+            [['filesize', 'entityID', 'weight'], 'integer'],
             [['filename'], 'string', 'max' => 255],
         ];
     }

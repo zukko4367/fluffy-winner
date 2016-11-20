@@ -11,6 +11,7 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\web\Response;
 use yii\web\UploadedFile;
+use yii\helpers\FileHelper;
 
 /**
  * DocumentController implements the CRUD actions for Document model.
@@ -128,6 +129,7 @@ class DocumentController extends Controller
         {
             if($file->saveAs(Yii::getAlias('@webroot').$path))
             {
+                $mimetype = FileHelper::getMimeType(Yii::getAlias('@webroot').$path);
                 $attachment = new Attachment();
                 $attachment->load(['Attachment' => [
                     'entityID' => 0,
@@ -135,6 +137,7 @@ class DocumentController extends Controller
                     'filesize' => $file->size,
                     'path' => $path,
                     'weight' => 0,
+                    'mimetype' => $mimetype,
                 ]]);
                 if($attachment->save())
                 {
@@ -146,7 +149,7 @@ class DocumentController extends Controller
         return false;
     }
 
-    public function actionRemove()
+    public function actionRemove($id)
     {
         $g = Yii::$app->request->get();
         $attachment = Attachment::findOne($g['id']);

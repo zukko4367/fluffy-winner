@@ -31,15 +31,19 @@ $this->registerJsFile('js/main.js', ['depends' => ['yii\web\JqueryAsset'],]);
     <div class="add-attachments-container">
         <?= DropZoneWidget::widget([
             'options' => [
-                'maxFilesize' => '2',
+                'maxFilesize' => '50000',
                 'url' => '/document/upload',
                 'addRemoveLinks' => true,
             ],
             'events' => [
                 'removedfile' => "function(file){
-                    $.get('/document/remove',{id:file.id},function(response){
-                        console.log(response);
-                    });
+                    var id = $(file.previewElement).find('.dz-id input').val();
+                    if(id)
+                    {
+                        $.get('/document/remove',{id:id},function(response){
+                            console.log(response);
+                        });
+                    }
                 }",
                 'success' => "function(file, response){
                     var id = response.id;
@@ -70,8 +74,10 @@ $this->registerJsFile('js/main.js', ['depends' => ['yii\web\JqueryAsset'],]);
                     if(file.id)
                     {
                         var id = file.id;
-                        file.previewElement.querySelector('img').src = file.thumbnail;
-                        file.previewElement.querySelector('img').src = file.thumbnail;
+                        if($.inArray(file.mimetype,['image/jpeg', 'image/png', 'image/gif']) !== -1)
+                        {
+                            file.previewElement.querySelector('img').src = file.path;
+                        }
                         //var fields = ['id', 'weight', 'title'];
                             $('<input>', {
                                 type: 'hidden',
