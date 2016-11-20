@@ -16,7 +16,7 @@ class Document extends \yii\db\ActiveRecord
     public $file;
     public function getAttachments()
     {
-        return $this->hasMany(Attachment::className(),['entityID' => 'id'])->orderBy(['attachment.weight' => SORT_DESC]);
+        return $this->hasMany(Attachment::className(),['entityID' => 'id'])->orderBy(['attachment.weight' => SORT_ASC]);
     }
 
     /**
